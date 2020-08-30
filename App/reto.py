@@ -115,6 +115,7 @@ def loadMovies ():
 
 
 def create_ranking(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
+  
     sort.mergesort(listadetails,greater_average)
     averagebest=lt.newList("ARRAY_LIST") #Usando implementacion linkedlist
     for elemento in range(1,parametro_average_best+1):
@@ -136,30 +137,61 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
     countworst=lt.newList("ARRAY_LIST")
     for elemento in range(0, parametro_average_worst+1):
         lt.addLast(countworst,lt.getElement(listadetails,elemento))
-    
-    
-    if parametro_average_best>0:
-        print("-------------------------------------------------------------------")
-        print("MEJOR VALORADAS")
+    try:
+        if parametro_average_best>0:
+            print("-------------------------------------------------------------------")
+            print("MEJOR VALORADAS")
         
-        print(averagebest)
-        lista=[]
-        for i in range(1,11):
-            # lista.append(averagebest["elements"][i]["original_title"])
-        print(len(averagebest))
-        print (lista)
-    if parametro_average_worst>0:
-        print("-------------------------------------------------------------------")
-        print("PEOR VALORADAS")
-        print(averageworst)
-    if parametro_count_best>0:
-        print("-------------------------------------------------------------------")
-        print("MEJOR VOTADAS")
-        print(countbest)
-    if parametro_count_worst>0:
-        print("-------------------------------------------------------------------")
-        print("PEOR VOTADAS")
-        print(countworst)
+        #print(averagebest)
+            lista=[]
+            x=lt.size(averagebest)
+            for i in range(1,x+1):
+                 y=lt.getElement(averagebest,i)
+                 lista.append(y["original_title"])
+            print (lista)
+        if parametro_average_worst>0:
+             print("-------------------------------------------------------------------")
+             print("PEOR VALORADAS")
+             lista=[]
+             x=lt.size(averageworst)
+             for i in range(1,x+1):
+                 y=lt.getElement(averageworst,i)
+                 lista.append(y["original_title"])
+             print (lista)
+        if parametro_count_best>0:
+             print("-------------------------------------------------------------------")
+             print("MEJOR VOTADAS")
+             lista=[]
+             x=lt.size(countbest)
+             for i in range(1,x+1):
+                 y=lt.getElement(countbest,i)
+                 lista.append(y["original_title"])
+             print (lista)
+        if parametro_count_worst>0:
+             print("-------------------------------------------------------------------")
+             print("PEOR VOTADAS")
+             lista=[]
+             x=lt.size(countworst)
+             for i in range(1,x+1):
+                 y=lt.getElement(countworst,i)
+                 lista.append(y["original_title"])
+             print (lista)
+    except:
+        print("Hubo un error al ingresar parametros, por favor vuelva a intentarlo.")
+
+def understand_gender(lis):
+
+
+
+
+
+
+
+
+
+
+
+
 def main():
     """
     Método principal del programa, se encarga de manejar todos los metodos adicionales creados
