@@ -80,10 +80,41 @@ def less_count(element1, element2):
 
 
 
-def compare_genders (name_gender,element2):
-    if (name_gender) in (element2['gender']):
-        return True
+
 #FIN COMPARACIONES
+#FUNCIONES PARA FILTRAR Y ORDENAR
+def filtrar_por_genero(listadetails,name_gender):
+    lista_genero=lt.newList("ARRAY_LIST")
+    for i in range(1,lt.size(listadetails)+1):
+             movie=lt.getElement(listadetails,i)
+             genres=movie["genres"]
+             genres=str(genres).split("|")
+             if name_gender  in genres:
+                lt.addLast(lista_genero,movie)  
+    return lista_genero
+def order_list(listadetails,parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
+    sort.mergesort(listadetails,greater_average)
+    averagebest=lt.newList("ARRAY_LIST") #Usando implementacion linkedlist
+    for elemento in range(1,parametro_average_best+1):
+        lt.addLast(averagebest,lt.getElement(listadetails,elemento))
+
+    averageworst= lt.newList("ARRAY_LIST")
+    sort.mergesort(listadetails,less_average)
+    for elemento in range(1,parametro_average_worst+1):
+        lt.addLast(averageworst,lt.getElement(listadetails,elemento))
+
+
+    sort.mergesort(listadetails,greater_count)
+    countbest=lt.newList("ARRAY_LIST")
+    for elemento in range(1, parametro_count_best+1):
+        lt.addLast(countbest,lt.getElement(listadetails,elemento))
+
+
+    sort.mergesort(listadetails,less_count)
+    countworst=lt.newList("ARRAY_LIST")
+    for elemento in range(1, parametro_count_worst+1):
+        lt.addLast(countworst,lt.getElement(listadetails,elemento))
+    return averagebest,averageworst,countbest,countworst
 def loadCSVFile (file, sep=";"):
 
     #lst = lt.newList("ARRAY_LIST") #Usando implementacion arraylist
@@ -116,28 +147,8 @@ def loadMovies ():
 
 def create_ranking(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
     t1_start = process_time() #tiempo inicial
-    sort.mergesort(listadetails,greater_average)
-    averagebest=lt.newList("ARRAY_LIST") #Usando implementacion linkedlist
-    for elemento in range(1,parametro_average_best+1):
-        lt.addLast(averagebest,lt.getElement(listadetails,elemento))
-
-    averageworst= lt.newList("ARRAY_LIST")
-    sort.mergesort(listadetails,less_average)
-    for elemento in range(1,parametro_average_worst+1):
-        lt.addLast(averageworst,lt.getElement(listadetails,elemento))
-
-
-    sort.mergesort(listadetails,greater_count)
-    countbest=lt.newList("ARRAY_LIST")
-    for elemento in range(1, parametro_count_best+1):
-        lt.addLast(countbest,lt.getElement(listadetails,elemento))
-
-
-    sort.mergesort(listadetails,less_count)
-    countworst=lt.newList("ARRAY_LIST")
-    for elemento in range(1, parametro_count_worst+1):
-        lt.addLast(countworst,lt.getElement(listadetails,elemento))
     try:
+        averagebest,averageworst,countbest,countworst=order_list(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst)
         if parametro_average_best>0:
             print("-------------------------------------------------------------------")
             print("MEJOR VALORADAS")
@@ -189,14 +200,11 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
 
 
 def understand_gender(listadetails,name_gender):
+    t1_start = process_time() #tiempo inicial
+
     try:
-         lista_genero=lt.newList("ARRAY_LIST")
-         for i in range(1,lt.size(listadetails)+1):
-             movie=lt.getElement(listadetails,i)
-             genres=movie["genres"]
-             genres=str(genres).split("|")
-             if name_gender  in genres:
-                lt.addLast(lista_genero,movie)
+         lista_genero=filtrar_por_genero(listadetails,name_gender)
+         
          numero_peliculas= "Este género tiene "+str(lt.size(lista_genero))+" películas."
     #print(lista_genero)
          x=lt.size(lista_genero)
@@ -209,13 +217,89 @@ def understand_gender(listadetails,name_gender):
          print(sumatoria_final)
          promedio = sumatoria/x
          promedio=round(promedio,2)
-         promedio_final="El promeedio de votos de este género es: " +str(promedio)+" votos"
+         promedio_final="El promedio de votos de este género es: " +str(promedio)+" votos"
          print(promedio_final)
+    
     except:
         print("Género inválido, intente de nuevo.")
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 
+def create_ranking_gender(listadetails,name_gender,parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
+     t1_start = process_time() #tiempo inicial
 
+     try:
+        lista_genero= filtrar_por_genero(listadetails,name_gender)
+        averagebest,averageworst,countbest,countworst=order_list(lista_genero,parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst)
+        x=lt.size(lista_genero)
+        sumatoria=0
+        for i in range(1,x+1):
+             y=lt.getElement(lista_genero,i)
+             sumatoria+=float(y["vote_count"])
+        promedio = sumatoria/x
+        promedio=round(promedio,2)
+        promedio_final="El promedio de votos de de "+name_gender+" es : " +str(promedio)+" votos"
+        print(promedio_final)
+        sumatoria_average=0
+        for i in range(1,x+1):
+             y=lt.getElement(lista_genero,i)
+             sumatoria_average+=float(y["vote_average"])
+        promedio_average=sumatoria_average/x
+        promedio=round(promedio_average,2)
+        promedio_average_final="El promedio de calificaciones de las películas de "+name_gender+" es : " +str(promedio)+"."
+
+        if parametro_average_best>0:
+            print("-------------------------------------------------------------------")
+            print("MEJOR VALORADAS: "+name_gender)
+        
+        #print(averagebest)
+            lista=[]
+            x=lt.size(averagebest)
+            print(x)
+            for i in range(1,x+1):
+                 y=lt.getElement(averagebest,i)
+                 lista.append(y["original_title"])
+            print (lista)
+        if parametro_average_worst>0:
+             print("-------------------------------------------------------------------")
+             print("PEOR VALORADAS: "+name_gender)
+             lista=[]
+             x=lt.size(averageworst)
+             print(x)
+             for i in range(1,x+1):
+                 y=lt.getElement(averageworst,i)
+                 lista.append(y["original_title"])
+             print (lista)
+             
+        if parametro_count_best>0:
+             print("-------------------------------------------------------------------")
+             print("MEJOR VOTADAS: "+name_gender)
+             lista=[]
+             #print(countbest)
+             x=lt.size(countbest)
+             print(x)
+             for i in range(1,x+1):
+                 y=lt.getElement(countbest,i)
+                 lista.append(y["original_title"])
+             print (lista)
+        if parametro_count_worst>0:
+             print("-------------------------------------------------------------------")
+             print("PEOR VOTADAS: "+name_gender)
+             lista=[]
+             x=lt.size(countworst)
+             print(x)
+             for i in range(1,x+1):
+                 y=lt.getElement(countworst,i)
+                 lista.append(y["original_title"])
+             print (lista)
+        print(promedio_average_final)
+        print(promedio_final)
+     except:
+        print("Género inválido, intente de nuevo.")
+     t1_stop = process_time() #tiempo final
+     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+    
 def main():
     """
     Método principal del programa, se encarga de manejar todos los metodos adicionales creados
@@ -270,7 +354,28 @@ def main():
                 pass   
 
             elif int(inputs[0])==6: #opcion 6
-                pass
+                name_gender=input("¿Qué género desea rankear?")
+
+                average_best=int(input("Desea ver las peliculas de "+ name_gender +"mejor valoradas? 1: Si, 0: No: "))
+                if average_best==1:
+                            parametro_average_best=int(input("¿Cuántas películas mejor valoradas de"+ name_gender +"desea conocer?"))
+                else:parametro_average_best=0
+                average_worst=int(input("Desea ver las peliculas de "+name_gender+ "peor valoradas? 1: Si, 0: No: "))
+                if average_worst==1:
+                            parametro_average_worst=int(input("¿Cuántas películas de "+name_gender+ "peor valoradas desea conocer?"))
+                else: parametro_average_worst=0
+                
+                count_best=int(input("Desea ver las peliculas de"+name_gender+ "mejor votadas? 1: Si, 0: No: "))
+                if count_best==1:
+                            parametro_count_best=int(input("¿Cuántas películas de "+name_gender+" mejor votadas desea conocer?"))
+                else: parametro_count_best=0
+
+
+                count_worst=int(input("Desea ver las peliculas de "+name_gender+ "peor votadas? 1: Si, 0: No: "))
+                if count_worst==1:
+                            parametro_count_worst=int(input("¿Cuántas películas de "+name_gender+ "peor votadas desea conocer?"))
+                else:parametro_count_worst=0
+                print(create_ranking_gender(listadetails,name_gender,parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst))
 
             elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
