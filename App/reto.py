@@ -78,11 +78,11 @@ def less_count(element1, element2):
     if float(element1['vote_count']) < float(element2['vote_count']):
         return True
 
-def crear_lista(element1, element2):
-    lista=[]
-    if (element1['original_title']) < (element2['original_title']):
-            append.lista(element1["original_title"])
-    return lista
+
+
+def compare_genders (name_gender,element2):
+    if (name_gender) in (element2['gender']):
+        return True
 #FIN COMPARACIONES
 def loadCSVFile (file, sep=";"):
 
@@ -115,7 +115,7 @@ def loadMovies ():
 
 
 def create_ranking(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
-  
+    t1_start = process_time() #tiempo inicial
     sort.mergesort(listadetails,greater_average)
     averagebest=lt.newList("ARRAY_LIST") #Usando implementacion linkedlist
     for elemento in range(1,parametro_average_best+1):
@@ -145,6 +145,7 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
         #print(averagebest)
             lista=[]
             x=lt.size(averagebest)
+            print(x)
             for i in range(1,x+1):
                  y=lt.getElement(averagebest,i)
                  lista.append(y["original_title"])
@@ -154,6 +155,7 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
              print("PEOR VALORADAS")
              lista=[]
              x=lt.size(averageworst)
+             print(x)
              for i in range(1,x+1):
                  y=lt.getElement(averageworst,i)
                  lista.append(y["original_title"])
@@ -181,18 +183,36 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
              print (lista)
     except:
         print("Hubo un error al ingresar parametros, por favor vuelva a intentarlo.")
-
-def understand_gender(listadetails):
-    x
-
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 
 
-
-
-
-
-
+def understand_gender(listadetails,name_gender):
+    try:
+         lista_genero=lt.newList("ARRAY_LIST")
+         for i in range(1,lt.size(listadetails)+1):
+             movie=lt.getElement(listadetails,i)
+             genres=movie["genres"]
+             genres=str(genres).split("|")
+             if name_gender  in genres:
+                lt.addLast(lista_genero,movie)
+         numero_peliculas= "Este género tiene "+str(lt.size(lista_genero))+" películas."
+    #print(lista_genero)
+         x=lt.size(lista_genero)
+         sumatoria=0
+         for i in range(1,x+1):
+             y=lt.getElement(lista_genero,i)
+             sumatoria+=float(y["vote_count"])
+         print(numero_peliculas)
+         sumatoria_final="La cantidad de votos de este género es: "+ str(sumatoria)+" votos"
+         print(sumatoria_final)
+         promedio = sumatoria/x
+         promedio=round(promedio,2)
+         promedio_final="El promeedio de votos de este género es: " +str(promedio)+" votos"
+         print(promedio_final)
+    except:
+        print("Género inválido, intente de nuevo.")
 
 
 
@@ -241,14 +261,16 @@ def main():
                 pass
 
             elif int(inputs[0])==4: #opcion 4
-                print(comparador(listadetails))
-
-            elif int(inputs[0])==3: #opcion 5
                 pass
+            elif int(inputs[0])==5: #opcion 5
 
-            elif int(inputs[0])==4: #opcion 6
+
+                gender_name= input("Digite el nombre del género en inglés que desea entender:")
+                understand_gender(listadetails,gender_name)
+                pass   
+
+            elif int(inputs[0])==6: #opcion 6
                 pass
-
 
             elif int(inputs[0])==0: #opcion 0, salir
                 sys.exit(0)
