@@ -129,13 +129,13 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
 
     sort.mergesort(listadetails,greater_count)
     countbest=lt.newList("ARRAY_LIST")
-    for elemento in range(1, parametro_average_best+1):
+    for elemento in range(1, parametro_count_best+1):
         lt.addLast(countbest,lt.getElement(listadetails,elemento))
 
 
     sort.mergesort(listadetails,less_count)
     countworst=lt.newList("ARRAY_LIST")
-    for elemento in range(0, parametro_average_worst+1):
+    for elemento in range(1, parametro_count_worst+1):
         lt.addLast(countworst,lt.getElement(listadetails,elemento))
     try:
         if parametro_average_best>0:
@@ -162,7 +162,9 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
              print("-------------------------------------------------------------------")
              print("MEJOR VOTADAS")
              lista=[]
+             #print(countbest)
              x=lt.size(countbest)
+             print(x)
              for i in range(1,x+1):
                  y=lt.getElement(countbest,i)
                  lista.append(y["original_title"])
@@ -172,6 +174,7 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
              print("PEOR VOTADAS")
              lista=[]
              x=lt.size(countworst)
+             print(x)
              for i in range(1,x+1):
                  y=lt.getElement(countworst,i)
                  lista.append(y["original_title"])
@@ -179,7 +182,8 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
     except:
         print("Hubo un error al ingresar parametros, por favor vuelva a intentarlo.")
 
-def understand_gender(lis):
+def understand_gender(listadetails):
+    x
 
 
 
