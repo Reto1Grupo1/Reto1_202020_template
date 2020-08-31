@@ -35,6 +35,7 @@ from DataStructures import listiterator as it
 #from DataStructures import liststructure as lt
 from Sorting import mergesort as sort
 from time import process_time 
+from statistics import mode
 
 
 
@@ -134,15 +135,15 @@ def loadCSVFile (file, sep=";"):
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     return lst
 
-def loadMovies ():
-    
-    listadetails = loadCSVFile("Data/themoviesdb/SmallMoviesDetailsCleaned.csv") #llamar funcion cargar datos
-    listacasting = loadCSVFile("Data/themoviesdb/MoviesCastingRaw-small.csv")
+def loadMoviesDetails ():
+    listadetails = loadCSVFile("Data/themoviesdb/SmallMoviesDetailsCleaned.csv") #llamar funcion cargar datos 
     print("Datos cargados details, ",lt.size(listadetails)," elementos cargados")
+    return listadetails
+def loadMoviesCasting():
+    listacasting = loadCSVFile("Data/themoviesdb/MoviesCastingRaw-small.csv")
     print("Datos cargados casting, ",lt.size(listacasting)," elementos cargados")
-    
 
-    return listadetails,listacasting
+    return listacasting
 
 
 def create_ranking(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst):
@@ -197,6 +198,91 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
     t1_stop = process_time() #tiempo final
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
+def know_director(director,listadetails,listacasting):
+    t1_start = process_time() #tiempo inicia
+    try:
+        listapeliculas=lt.newList("ARRAY_LIST")
+        listaid=lt.newList("ARRAY_LIST")
+        totalpeliculas=0
+        calificacion=0
+
+        for i in range(1,int(lt.size(listacasting))+1):
+            a=(lt.getElement(listacasting,i))["id"]
+            if (lt.getElement(listacasting,i))["director_name"] == director:
+                lt.addLast(listaid,a)
+        for i in range(1,(lt.size(listaid))+1):
+            for j in range(1,int(lt.size(listadetails))+1):
+                if str(lt.getElement(listaid,i))==str((lt.getElement(listadetails,j))["id"]):
+                    lt.addLast(listapeliculas,(lt.getElement(listadetails,j))["title"])
+                    totalpeliculas+=1
+                    calificacion+=float((lt.getElement(listadetails,j))["vote_average"])
+
+        promedio=calificacion/totalpeliculas
+
+        print("Peliculas del director: ")
+        for i in range(1,(lt.size(listapeliculas))+1):
+            print(lt.getElement(listapeliculas,i))
+        print("-------------------------------------------------------------------")
+        print("Numero de peliculas del director: "+str(totalpeliculas))
+        print("-------------------------------------------------------------------")
+        print("Promedio de calificacion de peliculas: "+str(round(promedio,2)))
+
+    except:
+        print("Error, nombre erroneo")
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
+    
+def know_actor(actor,listadetails,listacasting):
+    t1_start = process_time() #tiempo inicia
+    try:
+        listapeliculas=lt.newList("ARRAY_LIST")
+        listaid=lt.newList("ARRAY_LIST")
+        totalpeliculas=0
+        calificacion=0
+        listadirectores=[]
+
+        for i in range(1,int(lt.size(listacasting))+1):
+            a=(lt.getElement(listacasting,i))["id"]
+            if (lt.getElement(listacasting,i))["actor1_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor2_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor3_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor4_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor5_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+
+        for i in range(1,(lt.size(listaid))+1):
+            for j in range(1,int(lt.size(listadetails))+1):
+                if str(lt.getElement(listaid,i))==str((lt.getElement(listadetails,j))["id"]):
+                    lt.addLast(listapeliculas,(lt.getElement(listadetails,j))["title"])
+                    totalpeliculas+=1
+                    calificacion+=float((lt.getElement(listadetails,j))["vote_average"])
+
+        promedio=calificacion/totalpeliculas
+
+        director=mode(listadirectores)
+
+        print("Peliculas del actor: ")
+        for i in range(1,(lt.size(listapeliculas))+1):
+            print(lt.getElement(listapeliculas,i))
+        print("-------------------------------------------------------------------")
+        print("Numero de peliculas del actor: "+str(totalpeliculas))
+        print("-------------------------------------------------------------------")
+        print("Promedio de calificacion de peliculas: "+str(round(promedio,2)))
+        print("-------------------------------------------------------------------")
+        print("Director con mas peliculas: "+str(director))
+    except:
+        print("Error, nombre erroneo")
+    t1_stop = process_time() #tiempo final
+    print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 
 def understand_gender(listadetails,name_gender):
@@ -316,8 +402,9 @@ def main():
         if len(inputs)>0:
 
             if int(inputs[0])==1: #opcion 1
-                listadetails,listacasting = loadMovies()
-                
+                listacasting=loadMoviesCasting()
+                listadetails=loadMoviesDetails()
+
             elif int(inputs[0])==2: #opcion 2
                 average_best=int(input("Desea ver las peliculas mejor valoradas? 1: Si, 0: No: "))
                 if average_best==1:
@@ -342,36 +429,37 @@ def main():
 
 
             elif int(inputs[0])==3: #opcion 3
-                pass
+                director=input("Escriba el nombre del director: ")
+                know_director(director,listadetails,listacasting)
+
 
             elif int(inputs[0])==4: #opcion 4
-                pass
+                actor=input("Escriba el nombre del actor: ")
+                know_actor(actor,listadetails,listacasting)
+
             elif int(inputs[0])==5: #opcion 5
-
-
                 gender_name= input("Digite el nombre del género en inglés que desea entender:")
                 understand_gender(listadetails,gender_name)
-                pass   
 
             elif int(inputs[0])==6: #opcion 6
                 name_gender=input("¿Qué género desea rankear?")
 
-                average_best=int(input("Desea ver las peliculas de "+ name_gender +"mejor valoradas? 1: Si, 0: No: "))
+                average_best=int(input("Desea ver las peliculas de  "+ name_gender +" mejor valoradas? 1: Si, 0: No: "))
                 if average_best==1:
-                            parametro_average_best=int(input("¿Cuántas películas mejor valoradas de"+ name_gender +"desea conocer?"))
+                            parametro_average_best=int(input("¿Cuántas películas mejor valoradas de "+ name_gender +" desea conocer?"))
                 else:parametro_average_best=0
-                average_worst=int(input("Desea ver las peliculas de "+name_gender+ "peor valoradas? 1: Si, 0: No: "))
+                average_worst=int(input("Desea ver las peliculas de  "+name_gender+ " peor valoradas? 1: Si, 0: No: "))
                 if average_worst==1:
-                            parametro_average_worst=int(input("¿Cuántas películas de "+name_gender+ "peor valoradas desea conocer?"))
+                            parametro_average_worst=int(input("¿Cuántas películas de "+name_gender+ " peor valoradas desea conocer?"))
                 else: parametro_average_worst=0
                 
-                count_best=int(input("Desea ver las peliculas de"+name_gender+ "mejor votadas? 1: Si, 0: No: "))
+                count_best=int(input("Desea ver las peliculas de "+name_gender+ " mejor votadas? 1: Si, 0: No: "))
                 if count_best==1:
                             parametro_count_best=int(input("¿Cuántas películas de "+name_gender+" mejor votadas desea conocer?"))
                 else: parametro_count_best=0
 
 
-                count_worst=int(input("Desea ver las peliculas de "+name_gender+ "peor votadas? 1: Si, 0: No: "))
+                count_worst=int(input("Desea ver las peliculas de  "+name_gender+ " peor votadas? 1: Si, 0: No: "))
                 if count_worst==1:
                             parametro_count_worst=int(input("¿Cuántas películas de "+name_gender+ "peor votadas desea conocer?"))
                 else:parametro_count_worst=0
