@@ -33,7 +33,7 @@ import csv
 from ADT import list as lt
 from DataStructures import listiterator as it
 from DataStructures import liststructure as lt
-
+from statistics import mode
 from time import process_time 
 
 
@@ -61,10 +61,28 @@ def compareRecordIds (recordA, recordB):
         return 1
     return -1
 
+def greater_average(element1, element2):
+    if float(element1['vote_average']) > float(element2['vote_average']):
+        return True
+    return False
 
+def less_average(element1, element2):
+    if float(element1['vote_average']) < float(element2['vote_average']):
+        return True
+    return False
+
+def greater_count(element1, element2):
+    if float(element1['vote_count']) > float(element2['vote_count']):
+        return True
+    return False
+
+def less_count(element1, element2):
+    if float(element1['vote_count']) < float(element2['vote_count']):
+        return True
+    return False
 
 def loadCSVFile (file, cmpfunction):
-    lst=lt.newList("ARRAY_LIST", cmpfunction)
+    lst=lt.newList("SINGLE_LINKED", cmpfunction)
     dialect = csv.excel()
     dialect.delimiter=";"
     try:
@@ -77,11 +95,96 @@ def loadCSVFile (file, cmpfunction):
     return lst
 
 
-def loadMovies ():
-    lst = loadCSVFile("theMoviesdb/movies-small.csv",compareRecordIds) 
-    print("Datos cargados, " + str(lt.size(lst)) + " elementos cargados")
-    return lst
+def loadMoviesDetails ():
+    listadetails = loadCSVFile("theMoviesdb/SmallMoviesDetailsCleaned.csv",compareRecordIds) 
+    print("Datos cargados, " + str(lt.size(listadetails)) + " elementos cargados")
+    return listadetails
 
+def loadMoviesCasting ():
+    listacasting = loadCSVFile("theMoviesdb/MoviesCastingRaw-small.csv",compareRecordIds) 
+    print("Datos cargados, " + str(lt.size(listacasting)) + " elementos cargados")
+    return listacasting
+
+def requerimiento3(director,listadetails,listacasting):
+    try:
+        listapeliculas=lt.newList("ARRAY_LIST")
+        listaid=lt.newList("ARRAY_LIST")
+        totalpeliculas=0
+        calificacion=0
+
+        for i in range(1,int(lt.size(listacasting))+1):
+            a=(lt.getElement(listacasting,i))["id"]
+            if (lt.getElement(listacasting,i))["director_name"] == director:
+                lt.addLast(listaid,a)
+        for i in range(1,(lt.size(listaid))+1):
+            for j in range(1,int(lt.size(listadetails))+1):
+                if str(lt.getElement(listaid,i))==str((lt.getElement(listadetails,j))["id"]):
+                    lt.addLast(listapeliculas,(lt.getElement(listadetails,j))["title"])
+                    totalpeliculas+=1
+                    calificacion+=float((lt.getElement(listadetails,j))["vote_average"])
+
+        promedio=calificacion/totalpeliculas
+
+        print("Peliculas del director: ")
+        for i in range(1,(lt.size(listapeliculas))+1):
+            print(lt.getElement(listapeliculas,i))
+        print("-------------------------------------------------------------------")
+        print("Numero de peliculas del director: "+str(totalpeliculas))
+        print("-------------------------------------------------------------------")
+        print("Promedio de calificacion de peliculas: "+str(round(promedio,2)))
+
+    except:
+        print("Error, nombre erroneo")
+    
+def requerimiento4(actor,listadetails,listacasting):
+    try:
+        listapeliculas=lt.newList("ARRAY_LIST")
+        listaid=lt.newList("ARRAY_LIST")
+        totalpeliculas=0
+        calificacion=0
+        listadirectores=[]
+
+        for i in range(1,int(lt.size(listacasting))+1):
+            a=(lt.getElement(listacasting,i))["id"]
+            if (lt.getElement(listacasting,i))["actor1_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor2_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor3_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor4_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+            elif (lt.getElement(listacasting,i))["actor5_name"] == actor:
+                lt.addLast(listaid,a)
+                listadirectores.append((lt.getElement(listacasting,i))["director_name"])
+
+        for i in range(1,(lt.size(listaid))+1):
+            for j in range(1,int(lt.size(listadetails))+1):
+                if str(lt.getElement(listaid,i))==str((lt.getElement(listadetails,j))["id"]):
+                    lt.addLast(listapeliculas,(lt.getElement(listadetails,j))["title"])
+                    totalpeliculas+=1
+                    calificacion+=float((lt.getElement(listadetails,j))["vote_average"])
+
+        promedio=calificacion/totalpeliculas
+
+        director=mode(listadirectores)
+
+        print("Peliculas del actor: ")
+        for i in range(1,(lt.size(listapeliculas))+1):
+            print(lt.getElement(listapeliculas,i))
+        print("-------------------------------------------------------------------")
+        print("Numero de peliculas del actor: "+str(totalpeliculas))
+        print("-------------------------------------------------------------------")
+        print("Promedio de calificacion de peliculas: "+str(round(promedio,2)))
+        print("-------------------------------------------------------------------")
+        print("Director con mas peliculas: "+str(director))
+
+    except:
+        print("Error, nombre erroneo")
 
 def main():
     """
@@ -99,16 +202,18 @@ def main():
         if len(inputs)>0:
 
             if int(inputs[0])==1: #opcion 1
-                lstmovies = loadMovies()
-
+                listadetails = loadMoviesDetails ()
+                listacasting = loadMoviesCasting ()
             elif int(inputs[0])==2: #opcion 2
                 pass
 
             elif int(inputs[0])==3: #opcion 3
-                pass
+                director=input("Escriba el nombre del director: ")
+                requerimiento3(director,listadetails,listacasting)
 
             elif int(inputs[0])==4: #opcion 4
-                pass
+                actor=input("Escriba el nombre del actor: ")
+                requerimiento4(actor,listadetails,listacasting)
 
             elif int(inputs[0])==3: #opcion 5
                 pass
