@@ -196,6 +196,7 @@ def create_ranking(listadetails, parametro_average_best,parametro_average_worst,
     except:
         print("Hubo un error al ingresar parametros, por favor vuelva a intentarlo.")
     t1_stop = process_time() #tiempo final
+    print("-------------------------------------------------------------------")
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 def know_director(director,listadetails,listacasting):
@@ -228,8 +229,9 @@ def know_director(director,listadetails,listacasting):
         print("Promedio de calificacion de peliculas: "+str(round(promedio,2)))
 
     except:
-        print("Error, nombre erroneo")
+        print("Error, nombre incorrecto. Intente de nuevo.")
     t1_stop = process_time() #tiempo final
+    print("-------------------------------------------------------------------")
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     
 def know_actor(actor,listadetails,listacasting):
@@ -280,8 +282,9 @@ def know_actor(actor,listadetails,listacasting):
         print("-------------------------------------------------------------------")
         print("Director con mas peliculas: "+str(director))
     except:
-        print("Error, nombre erroneo")
+        print("Error, nombre incorrecto. Intente de nuevo.")
     t1_stop = process_time() #tiempo final
+    print("-------------------------------------------------------------------")
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 
@@ -299,8 +302,10 @@ def understand_gender(listadetails,name_gender):
              y=lt.getElement(lista_genero,i)
              sumatoria+=float(y["vote_count"])
          print(numero_peliculas)
+         print("-------------------------------------------------------------------")
          sumatoria_final="La cantidad de votos de este género es: "+ str(sumatoria)+" votos"
          print(sumatoria_final)
+         print("-------------------------------------------------------------------")
          promedio = sumatoria/x
          promedio=round(promedio,2)
          promedio_final="El promedio de votos de este género es: " +str(promedio)+" votos"
@@ -309,6 +314,7 @@ def understand_gender(listadetails,name_gender):
     except:
         print("Género inválido, intente de nuevo.")
     t1_stop = process_time() #tiempo final
+    print("-------------------------------------------------------------------")
     print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
 
 
@@ -379,11 +385,14 @@ def create_ranking_gender(listadetails,name_gender,parametro_average_best,parame
                  y=lt.getElement(countworst,i)
                  lista.append(y["original_title"])
              print (lista)
+        print("-------------------------------------------------------------------")
         print(promedio_average_final)
+        print("-------------------------------------------------------------------")
         print(promedio_final)
      except:
         print("Género inválido, intente de nuevo.")
      t1_stop = process_time() #tiempo final
+     print("-------------------------------------------------------------------")
      print("Tiempo de ejecución ",t1_stop-t1_start," segundos")
     
 def main():
