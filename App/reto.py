@@ -136,11 +136,11 @@ def loadCSVFile (file, sep=";"):
     return lst
 
 def loadMoviesDetails ():
-    listadetails = loadCSVFile("Data/themoviesdb/SmallMoviesDetailsCleaned.csv") #llamar funcion cargar datos 
+    listadetails = loadCSVFile("Data/themoviesdb/AllMoviesDetailsCleaned.csv") #llamar funcion cargar datos 
     print("Datos cargados details, ",lt.size(listadetails)," elementos cargados")
     return listadetails
 def loadMoviesCasting():
-    listacasting = loadCSVFile("Data/themoviesdb/MoviesCastingRaw-small.csv")
+    listacasting = loadCSVFile("Data/themoviesdb/AllMoviesCastingRaw.csv")
     print("Datos cargados casting, ",lt.size(listacasting)," elementos cargados")
 
     return listacasting
@@ -410,11 +410,11 @@ def main():
         inputs =input('Seleccione una opción para continuar\n') #leer opción ingresada
         if len(inputs)>0:
 
-            if int(inputs[0])==1: #opcion 1
+            if (inputs)=="1": #opcion 1
                 listacasting=loadMoviesCasting()
                 listadetails=loadMoviesDetails()
 
-            elif int(inputs[0])==2: #opcion 2
+            elif (inputs)=="2": #opcion 2
                 average_best=int(input("Desea ver las peliculas mejor valoradas? 1: Si, 0: No: "))
                 if average_best==1:
                             parametro_average_best=int(input("¿Cuántas películas mejor valoradas desea conocer?"))
@@ -437,20 +437,20 @@ def main():
                 print(create_ranking(listadetails, parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst))
 
 
-            elif int(inputs[0])==3: #opcion 3
+            elif (inputs)=="3": #opcion 3
                 director=input("Escriba el nombre del director: ")
                 know_director(director,listadetails,listacasting)
 
 
-            elif int(inputs[0])==4: #opcion 4
+            elif (inputs)=="4": #opcion 4
                 actor=input("Escriba el nombre del actor: ")
                 know_actor(actor,listadetails,listacasting)
 
-            elif int(inputs[0])==5: #opcion 5
+            elif (inputs)=="5": #opcion 5
                 gender_name= input("Digite el nombre del género en inglés que desea entender:")
                 understand_gender(listadetails,gender_name)
 
-            elif int(inputs[0])==6: #opcion 6
+            elif (inputs)=="6": #opcion 6
                 name_gender=input("¿Qué género desea rankear?")
 
                 average_best=int(input("Desea ver las peliculas de  "+ name_gender +" mejor valoradas? 1: Si, 0: No: "))
@@ -474,8 +474,11 @@ def main():
                 else:parametro_count_worst=0
                 print(create_ranking_gender(listadetails,name_gender,parametro_average_best,parametro_average_worst,parametro_count_best,parametro_count_worst))
 
-            elif int(inputs[0])==0: #opcion 0, salir
+            elif (inputs)=="0": #opcion 0, salir
                 sys.exit(0)
+
+            else:
+                print("Por favor, escoja una opción válida.")
                 
 if __name__ == "__main__":
     main()
